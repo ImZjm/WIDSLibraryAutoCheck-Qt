@@ -4,6 +4,7 @@
 #include "pojo/user.h"
 #include "core/checkcore.h"
 #include "ui/logindialog.h"
+#include "core/apirequest.h"
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -65,6 +66,11 @@ void MainWindow::on_btnAllCheck_clicked()
 void MainWindow::on_btnAddAuth_clicked()
 {
     LoginDialog l;
+    connect(&l, &LoginDialog::loginSuccess, this, &MainWindow::handleLoginSuccess);
     l.exec();
+}
+
+void MainWindow::handleLoginSuccess(const QString &token){
+    addStudentRow("", "", token);
 }
 

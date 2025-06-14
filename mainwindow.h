@@ -18,6 +18,7 @@ public:
     ~MainWindow();
     void addStudentRow(const QString &studentId, const QString &name, const QString &auth);
     void removeStudentById(const QString &studentId);
+    void handleLoginSuccess(const QString &token);
 
 private slots:
     void on_btnAllCheck_clicked();
