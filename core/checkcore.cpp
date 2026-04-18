@@ -19,7 +19,7 @@ QString CheckAll(){
     process.start(targetExe);
 
     if (!process.waitForStarted()) {
-        return QString("启动失败: %1").arg(process.errorString());
+        return QString("启动失败: %1\n请检查内核文件CheckJ").arg(process.errorString());
     }
 
     // 等待程序执行完成
