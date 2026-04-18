@@ -17,7 +17,7 @@ MainWindow::MainWindow(QWidget *parent)
     if(dataCtrl.initConfig()){
         ui->infoOuter->append("初始化成功！");
     }else{
-        ui->infoOuter->append("失败！");
+        ui->infoOuter->append("初始化失败！请检查auth.json文件");
     }
     AuthConfig config = AuthConfig::getInstance();
     for(int i=0; i<config.getUsers().size(); i++){
@@ -71,5 +71,13 @@ void MainWindow::on_btnAddAuth_clicked()
 
 void MainWindow::handleLoginSuccess(const QString &token){
     addStudentRow("", "", token);
+
+    AuthConfig &config = AuthConfig::getInstance();
+    config.getUsers().append(User("", "", token));
+
+    DataControl dataCtrl;
+    if (!dataCtrl.saveConfig()) {
+        ui->infoOuter->append("保存 auth.json 失败");
+    }
 }
 

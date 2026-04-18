@@ -2,6 +2,7 @@
 #include "../pojo/user.h"
 
 #include <QFile>
+#include <QFileInfo>
 #include <QJsonDocument>
 #include <QJsonObject>
 #include <QDir>
@@ -18,8 +19,24 @@ bool DataControl::initConfig() {
     // 打开文件
     QFile file(filePath);
     if (!file.exists()) {
-        qDebug() << "文件不存在：" << filePath;
-        return 0;
+        QDir dir(QFileInfo(filePath).absolutePath());
+        if (!dir.exists()) {
+            if (!dir.mkpath(".")) {
+                qDebug() << "创建目录失败：" << dir.absolutePath();
+                return 0;
+            }
+        }
+
+        if (!file.open(QIODevice::WriteOnly | QIODevice::Truncate)) {
+            qDebug() << "创建文件失败：" << filePath;
+            return 0;
+        }
+
+        QJsonObject defaultObj;
+        defaultObj.insert("formVersion", 0);
+        defaultObj.insert("user", QJsonArray());
+        file.write(QJsonDocument(defaultObj).toJson(QJsonDocument::Indented));
+        file.close();
     }
 
     if (!file.open(QIODevice::ReadOnly)) {
@@ -48,7 +65,7 @@ bool DataControl::initConfig() {
     QJsonObject obj = doc.object();
 
     if (obj.contains("formVersion")) {
-        config.setFormVersion(obj.value("formVersion").toInt());\
+        config.setFormVersion(obj.value("formVersion").toInt());
     }
 
     if (obj.contains("user") && obj.value("user").isArray()) {
@@ -60,4 +77,41 @@ bool DataControl::initConfig() {
         }
     }
     return 1;
+}
+
+bool DataControl::saveConfig() {
+    QString appDir = QApplication::applicationDirPath();
+    QString filePath = appDir + QDir::separator() + "core" + QDir::separator() + "auth.json";
+
+    QDir dir(QFileInfo(filePath).absolutePath());
+    if (!dir.exists()) {
+        if (!dir.mkpath(".")) {
+            qDebug() << "创建目录失败：" << dir.absolutePath();
+            return false;
+        }
+    }
+
+    QJsonObject rootObj;
+    rootObj.insert("formVersion", config.getFormVersion());
+
+    QJsonArray userArray;
+    QList<User> users = config.getUsers();
+    for (const User &user : users) {
+        QJsonObject userObj;
+        userObj.insert("stuId", user.getStuId());
+        userObj.insert("name", user.getName());
+        userObj.insert("auth", user.getAuth());
+        userArray.append(userObj);
+    }
+    rootObj.insert("user", userArray);
+
+    QFile file(filePath);
+    if (!file.open(QIODevice::WriteOnly | QIODevice::Truncate)) {
+        qDebug() << "无法写入文件：" << filePath;
+        return false;
+    }
+
+    file.write(QJsonDocument(rootObj).toJson(QJsonDocument::Indented));
+    file.close();
+    return true;
 }

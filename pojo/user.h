@@ -5,14 +5,15 @@
 
 class User
 {
+    friend class DataControl;
     QString stuId;
     QString name;
     QString auth;
 public:
     User(QString stuId, QString name, QString auth):stuId(stuId), name(name), auth(auth){};
-    QString getStuId();
-    QString getName();
-    QString getAuth();
+    QString getStuId() const;
+    QString getName() const;
+    QString getAuth() const;
 };
 
 #endif // USER_H

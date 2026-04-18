@@ -1,13 +1,13 @@
 #include "user.h"
 
-QString User::getStuId(){
+QString User::getStuId() const{
     return stuId;
 }
 
-QString User::getName(){
+QString User::getName() const{
     return name;
 }
 
-QString User::getAuth(){
+QString User::getAuth() const{
     return auth;
 }

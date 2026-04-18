@@ -12,6 +12,7 @@ class DataControl
 public:
     DataControl(){}
     bool initConfig();
+    bool saveConfig();
 };
 
 #endif // DATACONTROL_H
