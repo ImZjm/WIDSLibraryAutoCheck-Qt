@@ -4,7 +4,6 @@
 #include "pojo/user.h"
 #include "core/checkcore.h"
 #include "ui/logindialog.h"
-#include "core/apirequest.h"
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)

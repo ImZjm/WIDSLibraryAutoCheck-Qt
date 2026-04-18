@@ -67,7 +67,7 @@
         <item>
          <widget class="QPushButton" name="btnAddAuth">
           <property name="text">
-           <string>PushButton</string>
+           <string>添加账号</string>
           </property>
          </widget>
         </item>
